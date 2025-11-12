@@ -1,8 +1,8 @@
 #### CSC 112 Final Project
-C -> MIPS64 Assembly -> Machine Code (bin : hex)
+A. Hardcode: C -> MIPS64 Assembly -> Machine Code (bin : hex)
+B. Using lex and yacc: yet started
 
-Status: in progress
-
+A:
 Current capabilities:
 * validate each line from the input text file and determine whether it's a valid declaration or assignment (int type only)
 * generate MIPS64 assembly for each valid line
