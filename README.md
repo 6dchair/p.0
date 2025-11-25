@@ -1,7 +1,8 @@
+# PART 1:
 ## Source -> MIPS64 Assemby -> Machine code (Hardcoded using C language)
 
-### This project reads a source text file written in a simplified high-level language (adhering to C syntax) and generates: (1) MIPS64 assembly code saved to a .txt file, and (2) Machine code in both binary and hex formats saved to an .mc file.
-# And displayed on the terminal are the lines and whether each line is valid or erroneous (displays error type or its cause).
+This project reads a source text file written in a simplified high-level language (adhering to C syntax) and generates: (1) MIPS64 assembly code saved to a .txt file, and (2) Machine code in both binary and hex formats saved to an .mc file.
+And displayed on the terminal are the lines and whether each line is valid or erroneous (displays error type or its cause).
 
 ### This project consists of the ff C source and header files:
 
@@ -24,3 +25,5 @@
     6. Generate assembly code from the parsed statement structures
     7. Generate the machine code using the generated assembly code text file
     8. End program execution
+
+# PART 2: 
