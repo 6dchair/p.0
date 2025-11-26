@@ -3,7 +3,7 @@
 ### This project reads a source text file written in a simplified high-level language (adhering to C syntax) and generates: (1) MIPS64 assembly code saved to a .txt file, and (2) Machine code in both binary and hex formats saved to an .mc file.
 ### And displayed on the terminal are the lines and whether each line is valid or erroneous (displays error type or its cause).
 
-## This project consists of the ff C source and header files:
+### This project consists of the ff C source and header files:
 
     1.Line validator
         - checks syntax validity of each line (no assembly, no machine code)
