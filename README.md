@@ -15,6 +15,8 @@ _For more details about the C source and header files and what they do, please r
     5. Generate assembly code from the parsed statement structures
     6. Generate the machine code using the generated assembly code text file
     7. End program execution
+    
+*Note:* This compiler currently supports only *variable declaration*, *assignment*, and *basic arithmetic operations*, following *C syntax*.
 
 # PART 2: Custom language using Lex & Yacc 
 _WIP_
