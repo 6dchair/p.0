@@ -131,7 +131,8 @@ static int Parse_F(const char **p, FILE *out, int target) {
 // left-associative chaining
 // T -> T * F | T / F | F
 static int Parse_T(const char **p, FILE *out, int target) {
-    int left = Parse_F(p, out, 0);
+    //int left = Parse_F(p, out, 0);
+    int left = Parse_F(p, out, target ? target : 0);
     while(1) {
         SkipSpacesPtr(p);
         if(**p == '*'||**p == '/') {
@@ -158,14 +159,16 @@ static int Parse_E(const char **p, FILE *out, int target) {
     while(1) {
         SkipSpacesPtr(p);
         if(**p == '+'||**p == '-') {
-            char op = **p; (*p)++;
+            char op = **p;
+            (*p)++;
             SkipSpacesPtr(p);
             int right = Parse_T(p, out, 0);
-            int dst = NewTempRegister();
+            //int dst = NewTempRegister(); 
+            int dst = left; // final result stays in left (target) reg (fixed to not emit unnecessary "daddu")
             if(op == '+') 
-                GenerateBinOp(out,"daddu",dst,left,right);
+                GenerateBinOp(out, "daddu", dst, left, right);
             else 
-                GenerateBinOp(out,"dsubu",dst,left,right);
+                GenerateBinOp(out,"dsubu", dst, left, right);
             left = dst;
         } else 
             break;
@@ -188,8 +191,9 @@ int AssemblyGenerateDeclaration(const Statement *stmt, FILE *out) {
     if(stmt->rhs[0] != '\0') {
         const char *p = stmt->rhs;
         int rres = Parse_E(&p, out, reg);
-        if(rres != reg)
-            fprintf(out,"daddu r%d,r%d,r0\n",reg,rres);
+        // only emit daddu if the expr returned a different register & it is not a literal
+        if(rres != reg && rres >= temp_start)
+            fprintf(out,"daddu r%d, r%d, r0\n", reg, rres);
         StoreVariable(out, reg, stmt->lhs);
     }
     return 1;
@@ -214,8 +218,8 @@ int AssemblyGenerateAssignment(const Statement *stmt, FILE *out) {
         GenerateLoadImmediate(out, lhs_reg, imm_val);
     } else {
         int rres = Parse_E(&rhs, out, lhs_reg);
-        if(rres != lhs_reg)
-            fprintf(out,"daddu r%d,r%d,r0\n", lhs_reg, rres);
+        if(rres != lhs_reg && rres >= temp_start)
+            fprintf(out,"daddu r%d, r%d, r0\n", lhs_reg, rres);
     }
 
     StoreVariable(out, lhs_reg, stmt->lhs);
