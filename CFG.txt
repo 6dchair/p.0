@@ -5,25 +5,26 @@ A. CFG
 
 (1) Nonterminals
 		{ PROGRAM, 
-		LINES, LINE, FULL_LINE, 
-		DECL, PRINT, ASSIGN, 
-		DECL_ITEMS, MORE_DECL_ITEMS, DECL_ITEM, 
-		MORE_ASSIGN, 
-		PRINT_PARTS, MORE_PRINT_PARTS, PRINT_PART, 
+		LINES,  LINE,  STMT, 
+		DECL,  PRINT,  ASSIGN, 
+		PRINT_LIST, PRINT_ITEM
 		EXPR, TERM, FACTOR }
+
 (2) Terminals & Keywords
 		Terminals: { "=", "+", "-", "*", "/", "(", ")", ",", ":", ">>>", "<<" }
-		Keywords: { "int", "p" }  // Handled by lexer as separate token types:KW_INT,
-		//  KW_PRINT
+		Keywords: { "int", "ch",  "p" }  // Handled by lexer as separate token types:KW_INT, KW_CH,  KW_PRINT
+
 (3) Token classes:
-		ID: letter (letter | digit | "_")*
-		NUM: digit+
-		STR: " (letter | digit | symbol | ESCAPE)* "  (where symbol = printable ASCII except ")
-		ESCAPE: '\' ( 'n' | 't' | ' "' | '\' )
-		NEWLINE: "\n"
-		WHITESPACE: [ \t\r\f]+    // Ignored by lexer
-		COMMENT: "//" ~NEWLINE*   // Ignored by lexer
+		ID:   letter (letter | digit | "_")*
+		NUM:   digit+
+		STR:   " (letter | digit | symbol | ESCAPE)* "  (where symbol = printable ASCII except ")
+		ESCAPE:   '\' ( 'n' | 't' | ' "' | '\' )
+		NEWLINE:   "\n"
+		WHITESPACE:   [ \t\r\f]+    // Ignored by lexer
+		COMMENT:   "//" ~NEWLINE*   // Ignored by lexer
+
 (3) Start symbol: PROGRAM
+
 (4) Production rules:
 
 		// PROGRAM structure
@@ -31,44 +32,43 @@ A. CFG
 		
 		// STATEMENTS and line structure
 		LINES ->   LINE   LINES   |   ε
-		LINE ->   FULL_LINE   NEWLINE   |   NEWLINE   |   COMMENT   NEWLINE
-		FULL_LINE ->   DECL   |   PRINT  | ASSIGN
+		LINE ->   STMT   NEWLINE   |   NEWLINE   |   COMMENT   NEWLINE
+		STMT ->   DECL   |   PRINT  | ASSIGN
 		
-		// Declaration rules
-		DECL ->   KW_INT    DECL_ITEMS
-		DECL_ITEMS ->   DECL_ITEM   MORE_DECL_ITEMS
-		MORE_DECL_ITEMS ->   "," DECL_ITEM   MORE_DECL_ITEMS   |   ε
-		DECL_ITEM ->   ID  |   ID "=" EXPR 
+		// Declaration
+		DECL ->  KW_INT   ID   |   KW_INT   ID "=" EXPR 
+		    |   KW_CH   ID   |   KW_CH    ID  "="  STR
 		
-		// Assignment
-		ASSIGN ->   ID "=" EXPR   MORE_ASSIGN
-		MORE_ASSIGN -> ","   ASSIGN   |   ε
-		
-		// Print rules
-		PRINT ->   KW_PRINT    ":"    PRINT_PARTS
-		PRINT_PARTS ->   PRINT_PART MORE_PRINT_PARTS
-		MORE_PRINT_PARTS ->   "," PRINT_PART MORE_PRINT_PARTS | ε
-		
-		// Print parts: a string literal or an expression
-		PRINT_PART ->   STR | EXPR
+		// Assignment types
+		ASSIGN ->    ID  "="  EXPR   |   ID  "="  STR
+		 
+		// Printing
+		PRINT ->   KW_PRINT    ":"    PRINT_LIST
+		PRINT_LIST ->   PRINT_ITEM   |  PRINT_ITEM  ","   PRINT_LIST   |   ε
+		PRINT_ITEM ->   STR | EXPR
 		
 		// Expression grammar (fully standard, left associative)
 		EXPR ->   EXPR + TERM   | EXPR - TERM   | TERM
 		TERM ->   TERM * FACTOR   |   TERM / FACTOR    | FACTOR
-		FACTOR ->   NUM | ID | "(" EXPR ")"
+		FACTOR ->   NUM   |   ID   |   "(" EXPR ")"   |   "-"  FACTOR   |   "+"  FACTOR    
 
-	* Note: 
-			// (for comments), \n, \t, \", & whitespaces will be handled by the lexer
+* Note: 
+	// (for comments), \n, \t, \", & whitespaces will be handled by the lexer
+
 
 
 B. Sample Code Using p.0:
 
->>>		// start
+>>>	// start
 
-    int a, b, c											// declaration line must start with "int", no other "int"’s shall occur
-    p: "Prototype 0 is cool!\n"							// prints a literal  string
-    a = 1, b = 90, c = a + b							// assignment line is for assignments only
-    int d = -3, e = 8									// implicit declaration with simultaneous assignment is allowed
-    p: "sum of all = ", a + b + c + d + e, "a = ", a	// printing compound statements
+	int a  
+	int b  =  16
+	ch letter  =  "A"
+	ch string  =  "this is a string"
+	a = 7 
 
->>>		// end
+	p: "Printing a string"
+	p: "Printing string and an int using a variable: b = ", b
+	p: "Compound statements:\na + b is: ",  a + b,  "\nAnother string", string
+	
+<<<	// end
