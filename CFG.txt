@@ -1,5 +1,6 @@
 Content: Custom Programming Language CFG & Sample Code Using the Language
 Language name: p.0 (read as "P-zero") - Prototype Zero
+-----------------------------------------------------------------------------------------------------------------------------------
 
 A. CFG
 
@@ -55,7 +56,7 @@ A. CFG
 * Note: 
 	// (for comments), \n, \t, \", & whitespaces will be handled by the lexer
 
-
+------------------------------------------------------------------------------------------------------------------------------------------
 
 B. Sample Code Using p.0:
 
