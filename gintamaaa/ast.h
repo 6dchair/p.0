@@ -22,7 +22,6 @@ typedef struct Node {
         struct {
             struct Node *parts;
         } print_stmt;
-        // ADD THIS:
         struct {
             struct Node *id;    // ID node
             struct Node *str;   // STR node  
