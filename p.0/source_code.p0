@@ -1,0 +1,6 @@
+>>>
+int b = 10
+ch a = "HELLO"
+p: "hello"
+p: b
+<<<
